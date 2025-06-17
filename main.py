@@ -1,5 +1,8 @@
 import sys
 from blurring.video_blur import blur_video
+from yolov5.yolov5_runner import run_detection
+
+
 
 def main():
     # Validate argument count
@@ -31,6 +34,11 @@ def main():
         print("❌ Blurring failed.")
     else:
         print(f"✅ Blurring successful. Output saved to: {output_path}")
+
+    # Step 2: Run YOLO detection
+    detection_dir = run_detection(output_path)
+    print(f"✅ Detection completed. Results saved to: {detection_dir}")
+
 
 if __name__ == "__main__":
     main()
