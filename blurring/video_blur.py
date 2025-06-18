@@ -23,10 +23,17 @@ def find_video_file(video_name: str):
 
 
 def blur_video(video_name: str, blur_level: int):
-    input_path = find_video_file(video_name)
-    if input_path is None:
-        print(f"❌ Error: Video file not found in inputs/: {video_name}")
-        return None
+    input_path = Path(video_name)
+
+    if not input_path.exists():
+        input_path = find_video_file(video_name)
+        if input_path is None:
+            print(f"❌ Error: Video file not found in inputs/: {video_name}")
+            return None
+
+    # No blur case — return original path
+    if blur_level == 0:
+        return str(input_path)
 
     # Define output directory inside blurring/output/
     output_dir = Path("blurring") / "output"
@@ -48,23 +55,17 @@ def blur_video(video_name: str, blur_level: int):
 
     out = cv2.VideoWriter(str(output_path), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
 
+    # Apply blur frame by frame
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        if blur_level == 0:
-            blurred_frame = frame
-        else:
-            pil_frame = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            blurred_pil = pil_frame.filter(ImageFilter.GaussianBlur(radius=blur_level))
-            blurred_frame = cv2.cvtColor(np.array(blurred_pil), cv2.COLOR_RGB2BGR)
-
-        out.write(blurred_frame)
+        blurred = cv2.GaussianBlur(frame, (blur_level | 1, blur_level | 1), 0)
+        out.write(blurred)
 
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
 
-    print(f"✅ Blurred video saved to: {output_path}")
     return str(output_path)
+

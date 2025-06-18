@@ -3,13 +3,28 @@ from yolov5.yolov5_runner import run_detection
 from pathlib import Path
 
 
-def run_pipeline(video_name, blur_level):
-    output_path = blur_video(video_name, blur_level)
+def run_pipeline(video_file, blur_level):
+    # Ensure input is Path
+    video_name = Path(video_file.name) if hasattr(video_file, "name") else Path(video_file)
+
+    # Save file to inputs/ if it's an uploaded file
+    input_path = Path("inputs") / video_name.name
+    if hasattr(video_file, "read"):
+        input_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(input_path, "wb") as f:
+            f.write(video_file.read())
+    else:
+        input_path = Path(video_file)
+
+    # Run blurring
+    output_path = blur_video(str(input_path), blur_level)
     if output_path is None:
         raise RuntimeError("Blurring failed.")
 
+    # Run YOLO detection
     detection_dir = run_detection(output_path)
 
+    # Check if analysis CSV was created
     analysis_path = Path("R&D/output/yolo_analysis") / f"{Path(output_path).stem}_stats.csv"
     if analysis_path.exists():
         print(f"✅ Confidence analysis saved to: {analysis_path}")
@@ -17,7 +32,6 @@ def run_pipeline(video_name, blur_level):
     else:
         print("⚠️ Analysis CSV not found.")
         return str(detection_dir), None
-
 
 
 def main():
