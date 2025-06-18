@@ -1,23 +1,26 @@
-import sys
 from blurring.video_blur import blur_video
 from yolov5.yolov5_runner import run_detection
+from pathlib import Path
 
 
 def run_pipeline(video_name, blur_level):
-    from blurring.video_blur import blur_video
-    from yolov5.yolov5_runner import run_detection
-
     output_path = blur_video(video_name, blur_level)
     if output_path is None:
         raise RuntimeError("Blurring failed.")
 
     detection_dir = run_detection(output_path)
-    return detection_dir
+
+    analysis_path = Path("R&D/output/yolo_analysis") / f"{Path(output_path).stem}_stats.csv"
+    if analysis_path.exists():
+        print(f"✅ Confidence analysis saved to: {analysis_path}")
+        return str(detection_dir), str(analysis_path)
+    else:
+        print("⚠️ Analysis CSV not found.")
+        return str(detection_dir), None
 
 
 
 def main():
-    # Validate argument count
     if len(sys.argv) != 2:
         print("Usage: python main.py <video_name>")
         print("Example: python main.py hello or hello.mp4")
@@ -25,7 +28,6 @@ def main():
 
     video_name = sys.argv[1]
 
-    # Get blur level from user
     print("Choose blur level:")
     print("0 = no blur")
     print("5 = light blur")
@@ -40,14 +42,12 @@ def main():
         print("❌ Invalid blur level. Please enter 0, 5, 10, or 20.")
         return
 
-    # Run blur process
     output_path = blur_video(video_name, blur_level)
     if output_path is None:
         print("❌ Blurring failed.")
     else:
         print(f"✅ Blurring successful. Output saved to: {output_path}")
 
-    # Step 2: Run YOLO detection
     detection_dir = run_detection(output_path)
     print(f"✅ Detection completed. Results saved to: {detection_dir}")
 
