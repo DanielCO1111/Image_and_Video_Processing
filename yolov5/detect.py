@@ -68,35 +68,35 @@ from utils.torch_utils import select_device, smart_inference_mode
 
 @smart_inference_mode()
 def run(
-    weights=ROOT / "yolov5s.pt",  # model path or triton URL
-    source=ROOT / "data/images",  # file/dir/URL/glob/screen/0(webcam)
-    data=ROOT / "data/coco128.yaml",  # dataset.yaml path
-    imgsz=(640, 640),  # inference size (height, width)
-    conf_thres=0.25,  # confidence threshold
-    iou_thres=0.45,  # NMS IOU threshold
-    max_det=1000,  # maximum detections per image
-    device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
-    view_img=False,  # show results
-    save_txt=False,  # save results to *.txt
-    save_format=0,  # save boxes coordinates in YOLO format or Pascal-VOC format (0 for YOLO and 1 for Pascal-VOC)
-    save_csv=False,  # save results in CSV format
-    save_conf=False,  # save confidences in --save-txt labels
-    save_crop=False,  # save cropped prediction boxes
-    nosave=False,  # do not save images/videos
-    classes=None,  # filter by class: --class 0, or --class 0 2 3
-    agnostic_nms=False,  # class-agnostic NMS
-    augment=False,  # augmented inference
-    visualize=False,  # visualize features
-    update=False,  # update all models
-    project=ROOT / "runs/detect",  # save results to project/name
-    name="exp",  # save results to project/name
-    exist_ok=False,  # existing project/name ok, do not increment
-    line_thickness=3,  # bounding box thickness (pixels)
-    hide_labels=False,  # hide labels
-    hide_conf=False,  # hide confidences
-    half=False,  # use FP16 half-precision inference
-    dnn=False,  # use OpenCV DNN for ONNX inference
-    vid_stride=1,  # video frame-rate stride
+    weights=ROOT / "yolov5s.pt",
+    source=ROOT / "data/images",
+    data=ROOT / "data/coco128.yaml",
+    imgsz=(640, 640),
+    conf_thres=0.25,
+    iou_thres=0.45,
+    max_det=1000,
+    device="",
+    view_img=False,
+    save_txt=False,
+    save_format=0,
+    save_csv=False,
+    save_conf=False,
+    save_crop=False,
+    nosave=False,
+    classes=None,
+    agnostic_nms=False,
+    augment=False,
+    visualize=False,
+    update=False,
+    project=ROOT / "R&D/output/yolo_in_csv",  
+    name="exp",
+    exist_ok=False,
+    line_thickness=3,
+    hide_labels=False,
+    hide_conf=False,
+    half=False,
+    dnn=False,
+    vid_stride=1,
 ):
     """
     Runs YOLOv5 detection inference on various sources like images, videos, directories, streams, etc.
@@ -213,10 +213,12 @@ def run(
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
 
         # Define the path for the CSV file
-        csv_path = save_dir / "predictions.csv"
+        #csv_path = save_dir / "predictions.csv"
+        csv_path = save_dir / f"{Path(source).stem}_detected.csv"
+
 
         # Create or append to the CSV file
-        def write_to_csv(image_name, prediction, confidence):
+        '''def write_to_csv(image_name, prediction, confidence):
             """Writes prediction data for an image to a CSV file, appending if the file exists."""
             data = {"Image Name": image_name, "Prediction": prediction, "Confidence": confidence}
             file_exists = os.path.isfile(csv_path)
@@ -224,7 +226,34 @@ def run(
                 writer = csv.DictWriter(f, fieldnames=data.keys())
                 if not file_exists:
                     writer.writeheader()
+                writer.writerow(data) '''
+        
+
+
+
+        # Create or append to the CSV file
+        def write_to_csv(image_name, xyxy, conf, cls, name, frame_id):
+            data = {
+                "xmin": xyxy[0],
+                "ymin": xyxy[1],
+                "xmax": xyxy[2],
+                "ymax": xyxy[3],
+                "confidence": float(conf),
+                "class": int(cls),
+                "name": name,
+                "time": frame_id
+            }
+
+            file_exists = os.path.isfile(csv_path)
+            with open(csv_path, mode="a", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=data.keys())
+                if not file_exists:
+                    writer.writeheader()
                 writer.writerow(data)
+
+
+
+
 
         # Process predictions
         for i, det in enumerate(pred):  # per image
@@ -259,7 +288,14 @@ def run(
                     confidence_str = f"{confidence:.2f}"
 
                     if save_csv:
-                        write_to_csv(p.name, label, confidence_str)
+                        write_to_csv(
+                            p.name,
+                            [float(x.item()) for x in xyxy],
+                            conf,
+                            cls,
+                            names[int(cls)],
+                            frame
+                        )
 
                     if save_txt:  # Write to file
                         if save_format == 0:
