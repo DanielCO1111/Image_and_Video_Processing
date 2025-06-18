@@ -344,8 +344,10 @@ def run(
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
                     vid_writer[i].write(im0)
 
-        # Print time (inference-only)
-        LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1e3:.1f}ms")
+    # ✅ Force release of all video writers
+    for vw in vid_writer:
+        if isinstance(vw, cv2.VideoWriter):
+            vw.release()
 
     # Print results
     t = tuple(x.t / seen * 1e3 for x in dt)  # speeds per image

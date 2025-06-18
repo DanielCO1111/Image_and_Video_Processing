@@ -1,7 +1,6 @@
 from yolov5.detect import run
 from pathlib import Path
 import shutil
-import subprocess
 import importlib.util
 import sys
 
@@ -14,7 +13,6 @@ spec.loader.exec_module(analyze_confidence_module)
 
 
 def run_detection(video_path: str, weights_path='yolov5s.pt'):
-    # Prepare directories
     yolov5_output_dir = Path("yolov5/output")
     yolov5_output_dir.mkdir(parents=True, exist_ok=True)
     video_stem = Path(video_path).stem
@@ -32,7 +30,7 @@ def run_detection(video_path: str, weights_path='yolov5s.pt'):
         save_csv=True
     )
 
-    # Rename output video if it exists
+    # Rename output video
     raw_output_video = exp_dir / f"{video_stem}.mp4"
     final_output_video = exp_dir / f"{video_stem}_detected.mp4"
     if raw_output_video.exists():
@@ -44,32 +42,22 @@ def run_detection(video_path: str, weights_path='yolov5s.pt'):
     else:
         print("⚠️ Detection video not found.")
 
-    # Move CSV to correct location with correct name
+    # Move CSV file
     detected_csv = exp_dir / f"{video_stem}_detected.csv"
-    if not detected_csv.exists():
-        print("❌ CSV file not found after detection.")
-        return str(exp_dir)
-
-
     final_csv_path = csv_output_dir / f"{video_stem}.csv"
 
-    # If the destination file already exists and locked, try removing it first
-    if final_csv_path.exists():
+    if detected_csv.exists():
         try:
-            final_csv_path.unlink()  # remove the existing file
+            if final_csv_path.exists():
+                final_csv_path.unlink()
+            shutil.move(str(detected_csv), str(final_csv_path))
+            print(f"✅ CSV saved to: {final_csv_path}")
         except Exception as e:
-            print(f"❌ Failed to remove existing CSV: {e}")
-            return str(exp_dir)
+            print(f"⚠️ Failed to move CSV file: {e}")
+    else:
+        print("❌ CSV file not found after detection.")
 
-    try:
-        shutil.move(str(detected_csv), str(final_csv_path))
-        print(f"✅ CSV saved to: {final_csv_path}")
-    except Exception as e:
-        print(f"⚠️ Failed to move CSV file: {e}")
-        return str(exp_dir)
-    
-      
-    # Analyze confidence from CSV
+    # Run analysis (optional)
     print("📊 Running confidence analysis...")
     try:
         analyze_confidence_module.analyze_confidence(str(final_csv_path))
@@ -77,3 +65,5 @@ def run_detection(video_path: str, weights_path='yolov5s.pt'):
     except Exception as e:
         print(f"❌ analyze_confidence() failed: {e}")
 
+    # Always return detection path
+    return str(exp_dir)

@@ -31,19 +31,15 @@ def blur_video(video_name: str, blur_level: int):
             print(f"❌ Error: Video file not found in inputs/: {video_name}")
             return None
 
-    # No blur case — return original path
     if blur_level == 0:
         return str(input_path)
 
-    # Define output directory inside blurring/output/
     output_dir = Path("blurring") / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Construct output filename
     output_name = f"{input_path.stem}_blur{blur_level}.mp4"
     output_path = output_dir / output_name
 
-    # Open video
     cap = cv2.VideoCapture(str(input_path))
     if not cap.isOpened():
         print("❌ Error: Cannot open video file.")
@@ -51,16 +47,21 @@ def blur_video(video_name: str, blur_level: int):
 
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    if fps == 0 or fps is None:
+        fps = 25  # Fallback fps value if not available
 
-    out = cv2.VideoWriter(str(output_path), cv2.VideoWriter_fourcc(*'mp4v'), fps, (width, height))
+    out = cv2.VideoWriter(
+        str(output_path),
+        cv2.VideoWriter_fourcc(*'mp4v'),
+        fps,
+        (width, height)
+    )
 
-    # Apply blur frame by frame
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-
         blurred = cv2.GaussianBlur(frame, (blur_level | 1, blur_level | 1), 0)
         out.write(blurred)
 
@@ -68,4 +69,5 @@ def blur_video(video_name: str, blur_level: int):
     out.release()
 
     return str(output_path)
+
 

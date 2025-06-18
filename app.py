@@ -50,7 +50,8 @@ if st.button(" Run ▶️ "):
     st.info("Running video processing...")
     try:
         detection_dir, analysis_path = run_pipeline(video_file, blur_level)
-        st.success(f"✅ Pipeline completed! Outputs saved in:\n- {detection_dir}\n- {analysis_path}")
+       # st.success(f"✅ Pipeline completed! Outputs saved in:\n- {detection_dir}\n- {analysis_path}")
+       #st.info("Done")
 
         video_stem = Path(video_file).stem
 
