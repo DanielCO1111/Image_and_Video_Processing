@@ -50,16 +50,30 @@ def run_detection(video_path: str, weights_path='yolov5s.pt'):
         print("❌ CSV file not found after detection.")
         return str(exp_dir)
 
+
     final_csv_path = csv_output_dir / f"{video_stem}.csv"
+
+    # If the destination file already exists and locked, try removing it first
+    if final_csv_path.exists():
+        try:
+            final_csv_path.unlink()  # remove the existing file
+        except Exception as e:
+            print(f"❌ Failed to remove existing CSV: {e}")
+            return str(exp_dir)
+
     try:
         shutil.move(str(detected_csv), str(final_csv_path))
         print(f"✅ CSV saved to: {final_csv_path}")
     except Exception as e:
         print(f"⚠️ Failed to move CSV file: {e}")
         return str(exp_dir)
-
+    
+      
     # Analyze confidence from CSV
     print("📊 Running confidence analysis...")
-    analyze_confidence_module.analyze_confidence(str(final_csv_path))
+    try:
+        analyze_confidence_module.analyze_confidence(str(final_csv_path))
+        print("✅ analyze_confidence() completed successfully.")
+    except Exception as e:
+        print(f"❌ analyze_confidence() failed: {e}")
 
-    return str(exp_dir)

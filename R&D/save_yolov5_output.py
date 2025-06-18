@@ -1,4 +1,4 @@
-import torch
+'''import torch
 import pandas as pd
 import cv2
 from PIL import Image
@@ -83,4 +83,4 @@ out.release()
 cv2.destroyAllWindows()
 
 print(f"✅ YOLO detections saved to {output_csv_path}")
-print(f"✅ Annotated video saved to {output_video_path}")
+print(f"✅ Annotated video saved to {output_video_path}")'''
