@@ -3,6 +3,18 @@ from blurring.video_blur import blur_video
 from yolov5.yolov5_runner import run_detection
 
 
+def run_pipeline(video_name, blur_level):
+    from blurring.video_blur import blur_video
+    from yolov5.yolov5_runner import run_detection
+
+    output_path = blur_video(video_name, blur_level)
+    if output_path is None:
+        raise RuntimeError("Blurring failed.")
+
+    detection_dir = run_detection(output_path)
+    return detection_dir
+
+
 
 def main():
     # Validate argument count
