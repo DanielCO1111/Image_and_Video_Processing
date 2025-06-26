@@ -29,17 +29,37 @@ Scripts and notebooks for running the full pipeline in batch mode, supporting re
 ### Visual Examples of the functionalities:
 ---
 
-From the user interface I created for the system:
-
-![Screenshot 2025-06-26 120443](https://github.com/user-attachments/assets/109ad38d-27b1-4418-b693-e87f4dbde708)
-
-
-
-
+#### Example of output from running the YOLO algorithm on a simple image
 
 The image shows the output of a YOLO object detection model, which has identified and labeled a dog, a teddy bear, a potted plant, and a person (partially visible), each with a bounding box and a confidence score.
 
 ![image](https://github.com/user-attachments/assets/7bcb3088-160c-4081-bc9f-7b3b4e012a06)
+
+
+
+#### From the user interface I created for the system:
+The first step is to upload a video on which the analysis will be performed.
+![image](https://github.com/user-attachments/assets/63d82cfd-00a6-44b6-8d56-e413624d590f)
+
+Next, you will need to set the blur level:
+
+Without Gaussian blur, simulates the vision of an adult.
+
+Gaussian blur level 5 simulates the vision of a 2-year-old baby.
+
+Gaussian blur level 10 simulates the vision of a 1-year-old baby.
+
+Gaussian blur level 20 simulates the vision of a 6-month-old baby.
+
+![image](https://github.com/user-attachments/assets/b0f1cb4c-a8e6-439d-9ab0-7348bdecf8a4)
+
+After processing, you can watch the video after it has been blurred according to the selected level and identify the objects:
+
+You can directly view the results of the calculations, the average confidence levels and the number of objects detected in that video.
+
+Or download the analysis results to a CSV file.
+
+![image](https://github.com/user-attachments/assets/98dda894-ebb7-4d50-aa0a-39ba18c38795)
 
 ----
 
