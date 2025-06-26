@@ -29,6 +29,14 @@ Scripts and notebooks for running the full pipeline in batch mode, supporting re
 ### Visual Examples of the functionalities:
 ---
 
+From the user interface I created for the system:
+
+![Screenshot 2025-06-26 120443](https://github.com/user-attachments/assets/109ad38d-27b1-4418-b693-e87f4dbde708)
+
+
+
+
+
 The image shows the output of a YOLO object detection model, which has identified and labeled a dog, a teddy bear, a potted plant, and a person (partially visible), each with a bounding box and a confidence score.
 
 ![image](https://github.com/user-attachments/assets/7bcb3088-160c-4081-bc9f-7b3b4e012a06)
