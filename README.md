@@ -63,12 +63,18 @@ Or download the analysis results to a CSV file.
 
 ----
 
-![image](https://github.com/user-attachments/assets/7f9d9ada-3135-4530-a81e-5a92d74a4e8a)
-![image](https://github.com/user-attachments/assets/a5bfd3aa-389e-4651-ba29-02ae2bd48ab9)
+![image](https://github.com/user-attachments/assets/08e81f44-0bf6-4f0b-a69f-9a29fd5453cc)
 
-In these two images, the top photo is clear (unblurred) and the bottom photo is blurred before running the object detection algorithm.
-This simulates the difference between adult vision (sharp) and infant vision (blurred).
-You can see that the detection confidence scores (the numbers above each box) are lower in the blurred image, showing that the algorithm finds it harder to recognize objects when the image is blurry—just like it’s more difficult for infants to recognize objects due to their limited vision.
+![image](https://github.com/user-attachments/assets/f41cf1a4-e85c-45eb-b05a-ffe8b7f13090)
+
+![image](https://github.com/user-attachments/assets/bb6184b2-bcfd-4f1f-8335-24f45ab99681)
+
+![image](https://github.com/user-attachments/assets/8a449a3d-345b-4872-9ab7-9bec15eab152)
+
+
+In these four images, you can see the same frame from a video at increasing levels of blur, arranged in ascending blur levels: 0,5,10,20.
+This example simulates the difference between adult vision (without blur) and the vision of infants aged two, one, and six months.
+You can see that the recognition confidence scores (the numbers above each box) are lower the stronger the blur, showing that the algorithm has difficulty recognizing objects when the image is blurred - just as infants have more difficulty recognizing objects due to their limited vision.
 
 ----
 
