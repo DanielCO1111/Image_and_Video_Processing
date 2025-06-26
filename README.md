@@ -78,6 +78,8 @@ You can see that the recognition confidence scores (the numbers above each box) 
 
 ----
 
+#### Analysis
+
 ![image](https://github.com/user-attachments/assets/9cd6e5e3-b0c6-45ef-9292-612c4b134261)
 
 ![image](https://github.com/user-attachments/assets/31e0645d-a03f-4961-be7e-f448ac0de56f)
