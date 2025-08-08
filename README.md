@@ -88,12 +88,13 @@ You can see that the recognition confidence scores (the numbers above each box) 
 ## Technologies
 Python 3.x
 
-YOLOv5 (Ultralytics, PyTorch-based)
+PyTorch (YOLO)
 
 OpenCV, Pillow
 
 Pandas, NumPy
 
-Matplotlib
+Streamlit
 
-Jupyter Notebooks
+
+
