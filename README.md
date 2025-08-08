@@ -101,7 +101,7 @@ Streamlit
 1.Clone the repository:
 
 ```
-git clone https://github.com/DanielCO1111/NETFLIX-project.git](https://github.com/DanielCO1111/Image_and_Video_Processing
+git clone https://github.com/DanielCO1111/Image_and_Video_Processing
 cd Image_and_Video_Processing
 ```
 
